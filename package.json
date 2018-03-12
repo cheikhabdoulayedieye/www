@@ -15,7 +15,8 @@
     "errorhandler": "~1.5.0",
     "express": "~4.16.1",
     "method-override": "~2.3.10",
-    "morgan": "~1.9.0",
+    "ncp": "^2.0.0",
+    "pretty": "^2.0.0",
     "prismic-dom": "~2.0.6",
     "prismic-javascript": "~1.4.1",
     "pug": "~2.0.1",
@@ -33,7 +34,7 @@
     "eslint-plugin-import": "~2.7.0"
   },
   "engines": {
-    "node": "~6.12.3",
+    "node": "~8.10.0",
     "npm": ">=3.10.10"
   }
 }
