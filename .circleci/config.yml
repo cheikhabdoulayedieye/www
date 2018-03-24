@@ -4,6 +4,9 @@ jobs:
     docker:
       - image: circleci/node:8
     steps:
+      - add_ssh_keys:
+         fingerprints:
+           - "b8:ea:07:84:3b:71:1a:9f:fd:b3:43:be:71:51:92:36"
       - checkout
       - run:
           name: Prepare Git
