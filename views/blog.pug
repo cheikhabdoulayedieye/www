@@ -1,4 +1,5 @@
 extends ./layout.pug
 block body
-  div(data-wio-id=document.id)
-    != PrismicDOM.RichText.asHtml(document.data.contenu, ctx.linkResolver)
+  div(data-wio-id=post.id)
+    blabla
+    != PrismicDOM.RichText.asHtml(post.data.contenu, ctx.linkResolver)

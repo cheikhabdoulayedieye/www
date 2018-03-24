@@ -14,7 +14,6 @@ module.exports = (() => {
 
   // all environments
   app.set('port', process.env.PORT || 3000);
-  app.set('html_output_dir', process.env.HTML_OUTPUT_DIR || './deploy');
   app.set('views', path.join(__dirname, 'views'));
   app.set('view engine', 'pug');
   app.use(favicon('public/favicon.ico'));
