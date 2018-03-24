@@ -1,0 +1,13 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/node:8
+    steps:
+      - checkout
+      - run:
+          name: install-npm
+          command: npm install
+      - run:
+          name: create-static-site
+          command: node create-static-site.js
