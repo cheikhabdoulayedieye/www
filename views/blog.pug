@@ -1,5 +1,4 @@
 extends ./layout.pug
 block body
   div(data-wio-id=post.id)
-    blabla
     != PrismicDOM.RichText.asHtml(post.data.contenu, ctx.linkResolver)
