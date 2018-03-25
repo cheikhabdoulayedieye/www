@@ -18,10 +18,13 @@ html&attributes(pageInfo.htmlAttributes)
       script(src="/javascript/vendors/highlight.min.js")
   
   body&attributes(pageInfo.attributes)
-    if pageInfo.displayNav
-      nav#main-nav
+    nav#main-nav
+      if pageInfo.displayNav
         ul.menu
           li
             a(href="/") Page d'accueil
+      ul.menu.secondary
+        li
+          a(href="https://cheikhabdoulayedieye.prismic.io") Se connecter
     section#main-content
       block mainContent

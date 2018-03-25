@@ -47,6 +47,15 @@ strong {
 
 #main-nav {
   margin-top: 1em;
+  display: grid;
+  grid-template-columns: 70% 25%;
+  justify-content: space-between;
+}
+
+.menu.secondary {
+  text-align: right;
+  grid-column: 2;
+  font-size: 90%;
 }
 
 #main-content {
