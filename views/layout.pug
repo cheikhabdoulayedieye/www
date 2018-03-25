@@ -1,25 +1,26 @@
-doctype
+doctype html
+
 html&attributes(pageInfo.htmlAttributes)
+  
+  head
+      title #{pageInfo.title}
+      link(rel="stylesheet", href="/stylesheets/reset.css")
+      link(rel="stylesheet", href="/stylesheets/style.css")
+      link(href="https://fonts.googleapis.com/css?family=Lato:300,400,700,900", rel="stylesheet", type="text/css")
+      meta(name="viewport", content="width=device-width, initial-scale=1")
 
-head
-    title #{pageInfo.title}
-    link(rel="stylesheet", href="/stylesheets/reset.css")
-    link(rel="stylesheet", href="/stylesheets/style.css")
-    link(href="https://fonts.googleapis.com/css?family=Lato:300,400,700,900", rel="stylesheet", type="text/css")
-    meta(name="viewport", content="width=device-width, initial-scale=1")
-
-    // Required for Previews and Experiments
-    script(src="https://code.jquery.com/jquery-1.12.4.min.js")
-    script
-      = ctx?"window.prismic = { endpoint: '" + ctx.endpoint + "' };":""
-    script(src="//static.cdn.prismic.io/prismic.min.js")
-    script(src="/javascript/vendors/highlight.min.js")
-
-body&attributes(pageInfo.attributes)
-  if pageInfo.displayNav
-    nav#main-nav
-      ul.menu
-        li
-          a(href="/") Page d'accueil
-  section#main-content
-    block mainContent
+      // Required for Previews and Experiments
+      script(src="https://code.jquery.com/jquery-1.12.4.min.js")
+      script
+        = ctx?"window.prismic = { endpoint: '" + ctx.endpoint + "' };":""
+      script(src="//static.cdn.prismic.io/prismic.min.js")
+      script(src="/javascript/vendors/highlight.min.js")
+  
+  body&attributes(pageInfo.attributes)
+    if pageInfo.displayNav
+      nav#main-nav
+        ul.menu
+          li
+            a(href="/") Page d'accueil
+    section#main-content
+      block mainContent
