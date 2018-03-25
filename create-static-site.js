@@ -124,6 +124,7 @@ module.exports = (() => {
     console.log('Creating blog page ', post.uid);
     let pageInfo = {
       title: post.data.titre[0].text + ' | ' + 'Cheikh Abdoulaye Dieye',
+      canonicalUrl: `/id/${post.id}`,
       htmlAttributes: {
         lang: 'fr',
       },
