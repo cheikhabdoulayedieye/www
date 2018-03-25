@@ -7,8 +7,9 @@ block mainContent
     div#disqus_thread
     script(type="text/javascript").
       var disqus_config = function () {
-        this.page.url = "#{pageInfo.canonicalUrl}";
+        this.page.url = "https://cheikhabdoulayedieye.net#{pageInfo.canonicalUrl}";
         this.page.identifier = "#{post.id}";
+        this.page.title = "#{post.data.titre[0].text}";
       };
       (function() {
         var d = document, s = d.createElement('script');
