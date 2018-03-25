@@ -120,7 +120,7 @@ module.exports = (() => {
   let createBlogPage = (post) => {
     console.log('Creating blog page ', post.uid);
     let pageInfo = {
-      title: 'Cheikh Abdoulaye Dieye',
+      title: post.data.titre[0].text + ' | ' + 'Cheikh Abdoulaye Dieye',
       htmlAttributes: {
         lang: 'fr',
       },
