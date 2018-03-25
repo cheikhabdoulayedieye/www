@@ -5,8 +5,7 @@ const Cookies = require('cookies');
 const PrismicConfig = require('./prismic-configuration');
 const Onboarding = require('./onboarding');
 const app = require('./config');
-const pretty = require('pretty');
-const fs = require('fs-extra');
+const trimHtml = require('trim-html');
 
 const PORT = app.get('port');
 
@@ -20,9 +19,11 @@ app.use((req, res, next) => {
   res.locals.ctx = {
     endpoint: PrismicConfig.apiEndpoint,
     linkResolver: PrismicConfig.linkResolver,
+    htmlSerializer: PrismicConfig.htmlSerializer,
   };
   // add PrismicDOM in locals to access them in templates.
   res.locals.PrismicDOM = PrismicDOM;
+  res.locals.trimHtml = trimHtml;
   Prismic.api(PrismicConfig.apiEndpoint, {
     accessToken: PrismicConfig.accessToken,
     req,
@@ -36,6 +37,15 @@ app.use((req, res, next) => {
 
 app.get('/', (req, res) => {
   let posts;
+  let pageInfo = {
+    title: 'Cheikh Abdoulaye Dieye',
+    htmlAttributes: {
+      lang: 'fr'
+    },
+    attributes: {
+      id: 'homepage'
+    },
+  };
 
   // Get all blog posts.
   req.prismic.api.query(Prismic.Predicates.at('document.type', 'blog'),{})
@@ -46,16 +56,27 @@ app.get('/', (req, res) => {
     next(`error when retrieving blog posts: ${error.message}`);
   })
   .then(() => {
-    res.render('homepage', { posts });
+    res.render('homepage', { pageInfo, posts });
   });
 });
 
 app.get('/:uid', (req, res, next) => {
   const uid = req.params.uid;
+  let pageInfo = {
+    title: 'Cheikh Abdoulaye Dieye',
+    htmlAttributes: {
+      lang: 'fr'
+    },
+    displayNav: true,
+    attributes: {
+      id: 'blog-page'
+    },
+  };
   req.prismic.api.getByUID('blog', uid)
   .then((post) => {
     if (post) {
-      res.render('blog', { post });
+      pageInfo.title = post.data.titre[0].text + ' | ' + pageInfo.title;
+      res.render('blog', { pageInfo, post });
     } else {
       res.status(404).send('404 not found');
     }

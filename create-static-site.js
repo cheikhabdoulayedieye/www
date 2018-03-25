@@ -5,6 +5,7 @@ const pretty = require('pretty');
 const pug = require('pug');
 const fs = require('fs-extra');
 const git = require('simple-git/promise')();
+const trimHtml = require('trim-html');
 
 const DEPLOY_DIR = process.env.HTML_OUTPUT_DIR || 'deploy';
 const ctx = {
@@ -88,7 +89,16 @@ module.exports = (() => {
 
   let createHomepage = () => {
     console.log('Creating the homepage...');
-    pug.renderFile('views/homepage.pug', { posts, ctx, PrismicDOM }, (err, html) => {
+    let pageInfo = {
+      title: 'Cheikh Abdoulaye Dieye',
+      htmlAttributes: {
+        lang: 'fr',
+      },
+      attributes: {
+        id: 'homepage'
+      },
+    };
+    pug.renderFile('views/homepage.pug', { posts, pageInfo, ctx, PrismicDOM, trimHtml }, (err, html) => {
       if (err) {
         console.error('Unable to render file. ', err);
         process.exit();
@@ -109,7 +119,17 @@ module.exports = (() => {
 
   let createBlogPage = (post) => {
     console.log('Creating blog page ', post.uid);
-    pug.renderFile('views/blog.pug', { post, ctx, PrismicDOM }, (err, html) => {
+    let pageInfo = {
+      title: 'Cheikh Abdoulaye Dieye',
+      htmlAttributes: {
+        lang: 'fr',
+      },
+      displayNav: true,
+      attributes: {
+        id: 'blog-page'
+      },
+    };
+    pug.renderFile('views/blog.pug', { post, pageInfo, ctx, PrismicDOM }, (err, html) => {
       if (err) {
         console.error('Unable to render file. ', err);
         process.exit();
@@ -144,34 +164,34 @@ module.exports = (() => {
     if (!pageCreation.homepage) return;
     if (pageCreation.blogPages.length) return;
     if (!pageCreation.publicAssets) return;
-    console.log('Checking diff...');
     commitFileChanges();
   };
 
   let commitFileChanges = () => {
     git.cwd(DEPLOY_DIR);
+    console.log('Checking diff...');
     git.diff()
     .then((changes) => {
       if (changes) {
-        console.log('Files have been changed!', changes);
-        const date = new Date();
-        git.add('.')
-        .then(() => {
-          git.commit(`Auto commit - ${date}`)
-          .then(() => {
-            git.push('origin', 'master')
-            .then(() => console.log('Successfully pushed changes.'))
-            .catch((err) => console.error(`Could not push to git: ${err}`));
-          })
-          .catch((err) => console.error(`Could not commit to git: ${err}`));
-        })
-        .catch((err) => console.error(`Could not add files to git: ${err}`));
+        console.log('Files have changed:\n', changes);
+        return git.add('.');
       }
       else {
         console.log('No changes in repo.');
       }
     })
-    .catch((err) => console.error(`Could not get diff: ${err}`));
+    .then(() => {
+      console.log('Files staged.');
+      const date = new Date();
+      return git.commit(`Auto commit - ${date}`);
+    })
+    .then(() => {
+      console.log('Successfully committed changes to git.');
+      git.push('origin', 'master')
+      .then(() => console.log('Successfully pushed changes.'))
+      .catch((err) => console.error(`Could not push to git: ${err}`));
+    })
+    .catch((err) => console.error(err));
   };
 
 })();
