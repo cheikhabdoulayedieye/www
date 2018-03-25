@@ -10,3 +10,5 @@ block mainContent
         if renderedBody.more
           div.links
             a.read-more(href=`/${post.uid}`) Lire plus
+            a(href=`/${post.uid}#disqus_thread`) Commentaires
+  script#dsq-count-scr(src="//cheikhabdoulayedieye.disqus.com/count.js", async)

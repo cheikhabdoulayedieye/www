@@ -4,3 +4,17 @@ block mainContent
     h1.title #{post.data.titre[0].text}
     div.body
       != PrismicDOM.RichText.asHtml(post.data.contenu, ctx.linkResolver)
+    div#disqus_thread
+    script(type="text/javascript").
+      var disqus_config = function () {
+        this.page.url = "#{pageInfo.canonicalUrl}";
+        this.page.identifier = "#{post.id}";
+      };
+      (function() {
+        var d = document, s = d.createElement('script');
+        s.src = 'https://cheikhabdoulayedieye.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+      })();
+    noscript Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+                            

@@ -39,6 +39,7 @@ app.get('/', (req, res) => {
   let posts;
   let pageInfo = {
     title: 'Cheikh Abdoulaye Dieye',
+    canonicalUrl: '/',
     htmlAttributes: {
       lang: 'fr'
     },
@@ -60,6 +61,17 @@ app.get('/', (req, res) => {
   });
 });
 
+app.get('/id/:id', (req, res, next) => {
+  const id = req.params.id;
+  req.prismic.api.getByID(id)
+  .then((post) => {
+    res.redirect(`/${post.uid}`);
+  })
+  .catch((error) => {
+    next(`error when retrieving blog: ${error.message}`);
+  });
+});
+
 app.get('/:uid', (req, res, next) => {
   const uid = req.params.uid;
   let pageInfo = {
@@ -76,13 +88,14 @@ app.get('/:uid', (req, res, next) => {
   .then((post) => {
     if (post) {
       pageInfo.title = post.data.titre[0].text + ' | ' + pageInfo.title;
+      pageInfo.canonicalUrl = `/id/${post.id}`;
       res.render('blog', { pageInfo, post });
     } else {
       res.status(404).send('404 not found');
     }
   })
   .catch((error) => {
-    next(`error when retriving page ${error.message}`);
+    next(`error when retrieving blog: ${error.message}`);
   });
 });
 
