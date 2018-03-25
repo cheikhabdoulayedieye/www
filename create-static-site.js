@@ -18,6 +18,7 @@ module.exports = (() => {
   let pageCreation = {
     homepage: false,
     blogPages: [],
+    blogPageRedirects: [],
     publicAssets: false,
   }
 
@@ -79,6 +80,7 @@ module.exports = (() => {
       if (posts) {
         posts.every((post) => {
           pageCreation.blogPages.push(post.uid);
+          pageCreation.blogPageRedirects.push(post.id);
           createBlogPage(post);
         });
       }
@@ -91,6 +93,7 @@ module.exports = (() => {
     console.log('Creating the homepage...');
     let pageInfo = {
       title: 'Cheikh Abdoulaye Dieye',
+      canonicalUrl: '/',
       htmlAttributes: {
         lang: 'fr',
       },
@@ -129,6 +132,7 @@ module.exports = (() => {
         id: 'blog-page'
       },
     };
+
     pug.renderFile('views/blog.pug', { post, pageInfo, ctx, PrismicDOM }, (err, html) => {
       if (err) {
         console.error('Unable to render file. ', err);
@@ -147,6 +151,27 @@ module.exports = (() => {
         donePageCreation();
       });
     });
+
+    pug.renderFile('views/redirect.pug', { post, pageInfo }, (err, html) => {
+      if (err) {
+        console.error('Unable to render file. ', err);
+        process.exit();
+      }
+
+      // Write the blog canonical page redirect.
+      const html_file = DEPLOY_DIR + '/id/' + post.id + '.html';
+      fs.outputFile(html_file, pretty(html))
+      .then(() => {
+        console.log(`${post.id} file was saved.`);
+        const postIndex = pageCreation.blogPageRedirects.indexOf(post.id);
+        pageCreation.blogPageRedirects.splice(postIndex, 1);
+        donePageCreation();
+      })
+      .catch(err => {
+        console.error(err);
+        process.exit();
+      });
+    });
   };
 
   let copyPublicAssets = () => {
@@ -163,6 +188,7 @@ module.exports = (() => {
   let donePageCreation = () => {
     if (!pageCreation.homepage) return;
     if (pageCreation.blogPages.length) return;
+    if (pageCreation.blogPageRedirects.length) return;
     if (!pageCreation.publicAssets) return;
     commitFileChanges();
   };

@@ -63,9 +63,18 @@ app.get('/', (req, res) => {
 
 app.get('/id/:id', (req, res, next) => {
   const id = req.params.id;
+  let pageInfo = {
+    title: 'Cheikh Abdoulaye Dieye',
+  };
   req.prismic.api.getByID(id)
   .then((post) => {
-    res.redirect(`/${post.uid}`);
+    if (post) {
+      pageInfo.title = post.data.titre[0].text + ' | ' + pageInfo.title;
+      res.render('redirect', { pageInfo, post });
+    }
+    else {
+      res.status(404).send('404 not found');
+    }
   })
   .catch((error) => {
     next(`error when retrieving blog: ${error.message}`);

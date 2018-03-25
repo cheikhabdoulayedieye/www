@@ -1,0 +1,12 @@
+doctype html
+
+html
+  head
+    title #{pageInfo.title}
+    meta(name="keywords", content="automatic redirection")
+    - const redirectContent = '0; URL=/' + post.uid;
+    meta(http-equiv="refresh", content=redirectContent)
+  body
+    div
+      | If you are not redirected automatically, follow this <a href='/#{post.uid}'>link</a>.
+                            
