@@ -196,8 +196,11 @@ module.exports = (() => {
 
   let commitFileChanges = () => {
     git.cwd(DEPLOY_DIR);
-    console.log('Checking diff...');
-    git.diff()
+    git.add('./*')
+    .then(() => {
+      console.log('Checking diff...');
+      return git.diff();
+    })
     .then((changes) => {
       if (changes) {
         console.log('Files have changed:\n', changes);
