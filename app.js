@@ -129,17 +129,18 @@ app.get('/preview', (req, res) => {
 });
 
 app.post('/prismic-webhook', (req, res) => {
-  const { secret } = req.query;
-  if (!secret) {
+  let body = req.body;
+  if (!body.secret) {
     res.json({ error: 'Secret not provided!' });
     return;
   }
 
   const PRISMIC_WEBHOOK_SECRET = app.get('prismic_webhook_secret');
-  if (secret !== PRISMIC_WEBHOOK_SECRET) {
+  if (body.secret !== PRISMIC_WEBHOOK_SECRET) {
     res.json({ error: 'Wrong secret provided!' });
     return;
   }
+  delete body.secret;
 
   const bucket = app.get('aws_prismic_webhook_bucket');
   const date = new Date();
