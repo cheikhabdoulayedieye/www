@@ -6,6 +6,8 @@ const PrismicConfig = require('./prismic-configuration');
 const Onboarding = require('./onboarding');
 const app = require('./config');
 const trimHtml = require('trim-html');
+const AWS = require('aws-sdk');
+const s3 = new AWS.S3();
 
 const PORT = app.get('port');
 
@@ -124,4 +126,38 @@ app.get('/preview', (req, res) => {
   } else {
     res.send(400, 'Missing token from querystring');
   }
+});
+
+app.post('/prismic-webhook', (req, res) => {
+  const { secret } = req.query;
+  if (!secret) {
+    res.json({ error: 'Secret not provided!' });
+    return;
+  }
+
+  const PRISMIC_WEBHOOK_SECRET = app.get('prismic_webhook_secret');
+  if (secret !== PRISMIC_WEBHOOK_SECRET) {
+    res.json({ error: 'Wrong secret provided!' });
+    return;
+  }
+
+  const bucket = app.get('aws_prismic_webhook_bucket');
+  const date = new Date();
+  const month = (date.getMonth() + 1).toLocaleString(undefined, {minimumIntegerDigits: 2});
+  const fileKey = `${date.getFullYear()}/${month}/${date.toISOString()}.json`;
+  const params = {
+    Bucket: bucket,
+    Key: fileKey,
+    Body: JSON.stringify(req.body, null, '  '),
+    ContentType: "application/json"
+  };
+  s3.putObject(params, (err, data) => {
+   if (err) {
+     console.log(err)
+   }
+   else {
+     console.log(`Successfully uploaded data to ${bucket}/${fileKey}`);
+   }
+  });
+  res.json({ status: 'OK' });
 });

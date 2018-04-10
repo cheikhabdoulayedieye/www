@@ -126,3 +126,4 @@ jspm_packages
 *.tgz.log
 
 deploy
+nodemon.json

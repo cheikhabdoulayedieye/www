@@ -14,6 +14,8 @@ module.exports = (() => {
 
   // all environments
   app.set('port', process.env.PORT || 3000);
+  app.set('prismic_webhook_secret', process.env.PRISMIC_WEBHOOK_SECRET || '');
+  app.set('aws_prismic_webhook_bucket', process.env.AWS_PRISMIC_WEBHOOK_BUCKET || '');
   app.set('views', path.join(__dirname, 'views'));
   app.set('view engine', 'pug');
   app.use(favicon('public/favicon.ico'));
